@@ -10,24 +10,24 @@ using Newtonsoft.Json;
 
 namespace Demo.Functions
 {
-    public static class FirstFunction
+  public static class FirstFunction
+  {
+    [FunctionName("FirstFunction")]
+    public static async Task<IActionResult> Run(
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
+        ILogger log)
     {
-        [FunctionName("FirstFunction")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "get", "post", Route = null)] HttpRequest req,
-            ILogger log)
-        {
-            log.LogInformation("C# HTTP trigger function processed a request.");
+      log.LogInformation("C# HTTP trigger function processed a request.");
 
-            string name = req.Query["name"];
+      string name = req.Query["name"];
 
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+      string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+      dynamic data = JsonConvert.DeserializeObject(requestBody);
+      name = name ?? data?.name;
 
-            return name != null
-                ? (ActionResult)new OkObjectResult($"Hello, {name}")
-                : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
-        }
+      return name != null
+          ? (ActionResult)new OkObjectResult($"Hello, {name}, pipeline is working")
+          : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
     }
+  }
 }
